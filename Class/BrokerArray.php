@@ -19,7 +19,12 @@ class BrokerArray
     private $alpha;
     private $beta;
 
-    private $optimization;
+    private $income;
+
+    private $delta;
+    private $negativeDelta;
+
+    private $optimizeCounter;
 
     function __construct(
         $supply,
@@ -27,8 +32,7 @@ class BrokerArray
         $demand,
         $sellingCost,
         $transportCost
-    )
-    {
+    ) {
         $supply[4] = $demand[0] + $demand[1];
         $this->supply = $supply;
         $this->tempSupply = $supply;
@@ -42,15 +46,17 @@ class BrokerArray
 
         $this->transportCost = $transportCost;
 
+        $this->optimizeCounter = 0;
+
         $this->countProfit();
         $this->countSolution();
+
+        echo $this->description();
 
         echo $this->generateBasicTable();
         echo $this->generateTable("Tabela niezoptymalizowana");
 
         $this->optimize();
-
-        echo $this->generateTable("Tabela zoptymalizowana");
     }
 
     public function countProfit()
@@ -93,39 +99,80 @@ class BrokerArray
     }
 
     public function optimize() {
-        $tr = 0;
-        $th = 0;
+        if (!$this->negativeDelta) {
+            $tr = 0;
+            $th = 0;
 
-        while ($tr < 5) {
-            while ($th < 3) {
-                if ($this->optimization[$tr][$th] > 0) {
-                    if ($th-1 >= 0) {
-                        if ($this->unitProfit[$tr][$th-1] !== 0) {
-                            $value = $this->unitProfit[$tr][$th-1];
-                            $this->unitProfit[$tr][$th-1] -= $value;
-                            $this->unitProfit[$tr][$th] += $value;
-                            $this->unitProfit[$tr+1][$th] -= $value;
-                            $this->unitProfit[$tr+1][$th-1] += $value;
-
+            while ($tr < 5) {
+                while ($th < 3) {
+                    if ($this->delta[$tr][$th] > 0) {
+                        if ($tr-1 >= 0) {
+                            if ($th+1 < 3) {
+                                $value = $this->unitProfit[$tr-1][$th];
+                                $this->unitProfit[$tr-1][$th] -= $value;
+                                $this->unitProfit[$tr-1][$th+1] += $value;
+                                $this->unitProfit[$tr][$th+1] -= $value;
+                                $this->unitProfit[$tr][$th] += $value;
+                            } else if ($th-1 >= 0) {
+                                $value = $this->unitProfit[$tr-1][$th];
+                                $this->unitProfit[$tr-1][$th] -= $value;
+                                $this->unitProfit[$tr-1][$th-1] += $value;
+                                $this->unitProfit[$tr][$th-1] -= $value;
+                                $this->unitProfit[$tr][$th] += $value;
+                            }
+                        } else if ($tr+1 < 5) {
+                            if ($th+1 < 3) {
+                                $value = $this->unitProfit[$tr+1][$th];
+                                $this->unitProfit[$tr+1][$th] -= $value;
+                                $this->unitProfit[$tr+1][$th+1] += $value;
+                                $this->unitProfit[$tr][$th+1] -= $value;
+                                $this->unitProfit[$tr][$th] += $value;
+                            } else if ($th-1 >= 0) {
+                                $value = $this->unitProfit[$tr+1][$th];
+                                $this->unitProfit[$tr+1][$th] -= $value;
+                                $this->unitProfit[$tr+1][$th-1] += $value;
+                                $this->unitProfit[$tr][$th-1] -= $value;
+                                $this->unitProfit[$tr][$th] += $value;
+                            }
                         }
                     }
+                    $th++;
                 }
-                $th++;
+                $th = 0;
+                $tr++;
             }
-            $th = 0;
-            $tr++;
+
+            $tempIncome = $this->income;
+            $this->count();
+            if ($tempIncome > $this->income) {
+                $this->income = $tempIncome;
+                echo "Optymalizacja okazała się gorszym rozwiązaniem";
+            } else if ($tempIncome < $this->income) {
+                echo $this->generateTable("Tabela zoptymalizowana");
+            }
         }
 
-        $this->count();
+        if ($this->negativeDelta) {
+            echo '<div class="process-complete-div"><h2 class="title process-complete">Delta jest niedodatnia, proces zakończony sukcesem</h2></div>';
+        } else {
+            if ($this->optimizeCounter < 100) {
+                $this->optimize();
+                $this->optimizeCounter++;
+            } else {
+                echo '<div class="process-complete-div"><h2 class="title error">Proces został przerwany, za dużo razy została użyta funkcja optimize</h2></div>';
+            }
+        }
     }
 
     public function count() {
-        $tr = 0;
-        $th = 0;
-
         $this->alpha = [];
         $this->beta = [];
-        $this->optimization = [];
+        $this->delta = [];
+        $this->income = 0;
+        $this->negativeDelta = true;
+
+        $tr = 0;
+        $th = 0;
 
         $this->alpha[0] = 0;
         while ($tr < 5) {
@@ -146,11 +193,34 @@ class BrokerArray
 
         $tr = 0;
         $th = 0;
+
+        while ($th < 3) {
+            while ($tr < 5) {
+                if ($this->unitProfit[$tr][$th] !== 0) {
+                    if ($this->alpha[$tr] !== null) {
+                        $this->beta[$th] = $this->profit[$tr][$th] - $this->alpha[$tr];
+                    } else if ($this->beta[$th] !== null) {
+                        $this->alpha[$tr] = $this->profit[$tr][$th] - $this->beta[$th];
+                    }
+                }
+                $tr++;
+            }
+            $tr = 0;
+            $th++;
+        }
+
+
+        $tr = 0;
+        $th = 0;
         while ($tr < 5) {
             while ($th < 3) {
                 if ($this->unitProfit[$tr][$th] === 0) {
-                    $this->optimization[$tr][$th] = $this->profit[$tr][$th] - $this->alpha[$tr] - $this->beta[$th];
+                    $this->delta[$tr][$th] = $this->profit[$tr][$th] - $this->alpha[$tr] - $this->beta[$th];
+                    if ($this->delta[$tr][$th] > 0) {
+                        $this->negativeDelta = false;
+                    }
                 }
+                $this->income += $this->profit[$tr][$th] * $this->unitProfit[$tr][$th];
                 $th++;
             }
             $th = 0;
@@ -162,7 +232,7 @@ class BrokerArray
     {
         return
             '<div class="basic-div">
-                <h2>Tabela podstawowa</h2>
+                <h2 class="title table-title">Tabela podstawowa</h2>
                 <table class="table">
                     <tr>
                       <th></th>
@@ -208,7 +278,7 @@ class BrokerArray
     {
         return
             '<div class="solution-div">
-                <h2>' . $message . '</h2>
+                <h2 class="title table-title">' . $message . '</h2>
                 <table class="table unoptimized">
                     <tr>
                       <th></th>
@@ -263,29 +333,68 @@ class BrokerArray
                 
                 <table class="table">
                     <tr>
-                      <td>' . $this->optimization[0][0] . '</td>
-                      <td>' . $this->optimization[0][1] . '</td>
-                      <td>' . $this->optimization[0][2] . '</td>
+                      <td>' . $this->delta[0][0] . '</td>
+                      <td>' . $this->delta[0][1] . '</td>
+                      <td>' . $this->delta[0][2] . '</td>
                     </tr>
                     <tr>
-                      <td>' . $this->optimization[1][0] . '</td>
-                      <td>' . $this->optimization[1][1] . '</td>
-                      <td>' . $this->optimization[1][2] . '</td>
+                      <td>' . $this->delta[1][0] . '</td>
+                      <td>' . $this->delta[1][1] . '</td>
+                      <td>' . $this->delta[1][2] . '</td>
                     </tr>
                     <tr>
-                      <td>' . $this->optimization[2][0] . '</td>
-                      <td>' . $this->optimization[2][1] . '</td>
-                      <td>' . $this->optimization[2][2] . '</td>
+                      <td>' . $this->delta[2][0] . '</td>
+                      <td>' . $this->delta[2][1] . '</td>
+                      <td>' . $this->delta[2][2] . '</td>
                     </tr>
                     <tr>
-                      <td>' . $this->optimization[3][0] . '</td>
-                      <td>' . $this->optimization[3][1] . '</td>
-                      <td>' . $this->optimization[3][2] . '</td>
+                      <td>' . $this->delta[3][0] . '</td>
+                      <td>' . $this->delta[3][1] . '</td>
+                      <td>' . $this->delta[3][2] . '</td>
                     </tr>
                     <tr>
-                      <td>' . $this->optimization[4][0] . '</td>
-                      <td>' . $this->optimization[4][1] . '</td>
-                      <td>' . $this->optimization[4][2] . '</td>
+                      <td>' . $this->delta[4][0] . '</td>
+                      <td>' . $this->delta[4][1] . '</td>
+                      <td>' . $this->delta[4][2] . '</td>
+                    </tr>
+                </table>
+                <h2 class="title income">Zyski: <span class="income-solution-span">' . $this->income . '</span></h2>
+            </div>';
+    }
+
+    public function description() {
+        return
+            '<div class="task-description-div">
+                <p class="task-description-p">
+                4 dostawców (podaż: ' . $this->supply[0] . ', ' . $this->supply[1] . ', ' . $this->supply[2] . ' i ' . $this->supply[3] . ',
+                jednostkowe koszty zakupu: ' . $this->purchaseCost[0] . ', ' . $this->purchaseCost[1] . ', ' . $this->purchaseCost[2] . ' i ' . $this->purchaseCost[3] . '),
+                2 odbiorców (popyt: ' . $this->demand[0] . ' i ' . $this->demand[1] . ', ceny sprzedaży: ' . $this->sellingCost[0] . ' i ' . $this->sellingCost[1] . ').</p>
+                <h2 class="title table-title">Jednostkowe koszty transportu</h2>
+                <table class="table">
+                    <tr>
+                      <th></th>
+                      <th>O1</th>
+                      <th>O2</th>
+                    </tr>
+                    <tr>
+                      <th>D1</th>
+                      <td>' . $this->transportCost[0][0] . '</td>
+                      <td>' . $this->transportCost[0][1] . '</td>
+                    </tr>
+                    <tr>
+                      <th>D2</th>
+                      <td>' . $this->transportCost[1][0] . '</td>
+                      <td>' . $this->transportCost[1][1] . '</td>
+                    </tr>
+                    <tr>
+                      <th>D3</th>
+                      <td>' . $this->transportCost[2][0] . '</td>
+                      <td>' . $this->transportCost[2][1] . '</td>
+                    </tr>
+                    <tr>
+                      <th>D4</th>
+                      <td>' . $this->transportCost[3][0] . '</td>
+                      <td>' . $this->transportCost[3][1] . '</td>
                     </tr>
                 </table>
             </div>';
