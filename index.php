@@ -6,9 +6,9 @@
     <title>ZAGADNIENIE POŚREDNIKA</title>
 
     <div class="head-div">
-    <img src="party-frog.gif" alt="this slowpoke moves" class="frog-gif">
-    <h1 class="title main-title">zagadnienie pośrednika</h1>
-    <img src="party-frog.gif" alt="this slowpoke moves" class="frog-gif">
+        <img src="party-frog.gif" alt="this slowpoke moves" class="frog-gif">
+        <h1 class="title main-title">zagadnienie pośrednika</h1>
+        <img src="party-frog.gif" alt="this slowpoke moves" class="frog-gif">
     </div>
 
     <?php
@@ -18,20 +18,43 @@
 
 <body>
     <?php
+    // [podaż], [koszty zakupu], [popyt], [ceny sprzedaży], [koszty transportu]
+
 //        $brokerArray = new BrokerArray([20, 30, 20 ,30],
 //                                        [10, 12, 10, 12],
 //                                        [10, 28],
 //                                        [30, 25],
 //                                        [[8, 14], [12, 9], [8, 14], [12, 9]]
-//                                    );
-    $brokerArray = new BrokerArray([7, 14, 15 ,22],
-                                    [10, 12, 20, 24],
-                                    [10, 28],
-                                    [30, 25],
-                                    [[8, 14], [12, 9], [10, 5], [16, 2]]
-    );
+//        );
+
+        $brokerArray1 = new BrokerArray([7, 14, 15 ,25],
+                                        [10, 12, 20, 24],
+                                        [10, 35],
+                                        [30, 25],
+                                        [[8, 20], [12, 10], [15, 5], [16, 2]]
+        );
+
+        $brokerArray2 = new BrokerArray([7, 14, 15 ,22],
+                                        [10, 12, 20, 24],
+                                        [10, 28],
+                                        [30, 25],
+                                        [[8, 14], [12, 9], [10, 5], [16, 2]]
+        );
     ?>
 </body>
+<footer>
+    <div class="authors-div">
+        <p class="author-title-p">Autorzy:</p>
+        <div class="authors-container-div">
+            <p class="author-p">Szymon Nowak <br>
+                <a href="https://github.com/sznowak134" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/szymon-nowak-0669051b5/" target="_blank">LinkedIn</a></p>
+            <p class="author-p">Radosław Niestrój <br>
+                <a href="https://github.com/radoslawniestroj" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/rados%C5%82aw-niestr%C3%B3j-533901194/" target="_blank">LinkedIn</a></p>
+        </div>
+    </div>
+</footer>
 </html>
 
 <script type="text/javascript">

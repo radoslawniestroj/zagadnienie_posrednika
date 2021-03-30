@@ -12,6 +12,10 @@ td, th {
   text-align: left;
 }
 
+a {
+  color: black;
+}
+
 
 
 .head-div {
@@ -22,7 +26,8 @@ td, th {
 }
 
 .frog-gif {
-  width: 80px;
+  width: 120px;
+  height: 120px;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -30,6 +35,12 @@ td, th {
 
 
 
+
+.task-description-div {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 40px;
+}
 
 .basic-div {
   text-align: center;
@@ -41,11 +52,73 @@ td, th {
   margin-bottom: 40px;
 }
 
+.process-complete-div {
+  text-transform: uppercase;
+  text-align: center;
+  margin: 50px auto 200px;
+}
+
+.authors-div {
+  display: block;
+  text-align: center;
+  margin: 0 auto 20px auto;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.authors-container-div {
+  justify-content: center;
+  display: flex;
+}
+
+
+
+
+
 .title.main-title {
-  font-size: 40px;
+  font-size: 50px;
   text-transform: uppercase;
   text-align: center;
 }
+
+.title.table-title {
+  font-size: 30px;
+  text-align: center;
+}
+
+.title.process-complete {
+  color: #ffff00;
+  font-size: 40px;
+}
+
+.title.error {
+  color: #e60000;
+  font-size: 40px;
+}
+
+.title.income {
+  font-size: 25px;
+}
+
+.income-solution-span {
+  color: #04f000;
+}
+
+
+.task-description-p {
+  margin: 0 100px 0 100px;
+}
+
+.author-title-p {
+  margin: 0 0 2px;
+}
+
+.author-p {
+  margin: 0 5px 0 5px;
+}
+
+
+
 
 .table {
   text-align: center;
