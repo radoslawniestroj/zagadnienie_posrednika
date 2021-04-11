@@ -19,34 +19,26 @@
 <body>
     <?php
     // [podaż], [koszty zakupu], [popyt], [ceny sprzedaży], [koszty transportu]
-
-       $brokerArray1 = new BrokerArray([20, 30, 20 ,30],
-                                       [10, 12, 10, 12],
-                                       [10, 28],
-                                       [30, 25],
-                                       [[8, 14], [12, 9], [8, 14], [12, 9]]
-       );
-
-        $brokerArray2 = new BrokerArray([20, 30, 20 ,50],
-                                        [10, 12, 17, 12],
-                                        [10, 28],
-                                        [20, 25],
-                                        [[8, 14], [12, 5], [8, 14], [2, 9]]
-        );
-
-        $brokerArray3 = new BrokerArray([7, 14, 15 ,25],
+        $brokerArray1 = new BrokerArray([7, 14, 15 ,25],
                                         [10, 12, 20, 24],
                                         [10, 35],
                                         [30, 25],
                                         [[8, 20], [12, 10], [15, 5], [16, 2]]
         );
 
-        $brokerArray4 = new BrokerArray([7, 14, 15 ,22],
+        $brokerArray2 = new BrokerArray([7, 14, 15 ,22],
                                         [10, 12, 20, 24],
                                         [10, 28],
                                         [30, 25],
                                         [[8, 14], [12, 9], [10, 5], [16, 2]]
         );
+
+        $brokerArray3 = new BrokerArray([9, 11, 10 ,22],
+                                        [5, 7, 10, 24],
+                                        [10, 22],
+                                        [30, 21],
+                                        [[8, 14], [12, 9], [10, 5], [16, 2]]
+                                    );
     ?>
 </body>
 <footer>
