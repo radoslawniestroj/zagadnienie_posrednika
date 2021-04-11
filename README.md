@@ -5,7 +5,6 @@ Projekt stworzony w ramach ćwiczeń projektowych z przedmiotu "Badania operacyj
 ### Język
 
 * PHP
-* JS
 * HTML
 * CSS
 
@@ -25,7 +24,6 @@ Project is a part of project classes of "Badania operacyjne i logistyka" in AGH 
 ### Language
 
 * PHP
-* JS
 * HTML
 * CSS
 
