@@ -58,6 +58,12 @@ a {
   margin: 50px auto 200px;
 }
 
+.process-message-div {
+  text-transform: uppercase;
+  text-align: center;
+  margin: 10px auto 10px;
+}
+
 .authors-div {
   display: block;
   text-align: center;
@@ -94,6 +100,11 @@ a {
 .title.error {
   color: #e60000;
   font-size: 40px;
+}
+
+.title.error-small {
+  color: #e60000;
+  font-size: 20px;
 }
 
 .title.income {

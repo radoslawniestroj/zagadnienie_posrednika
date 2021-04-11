@@ -100,43 +100,272 @@ class BrokerArray
 
     public function optimize() {
         if (!$this->negativeDelta) {
+            $path = false;
             $tr = 0;
             $th = 0;
 
             while ($tr < 5) {
                 while ($th < 3) {
                     if ($this->delta[$tr][$th] > 0) {
-                        if ($tr-1 >= 0) {
-                            if ($th+1 < 3) {
-                                $value = $this->unitProfit[$tr-1][$th];
-                                $this->unitProfit[$tr-1][$th] -= $value;
-                                $this->unitProfit[$tr-1][$th+1] += $value;
-                                $this->unitProfit[$tr][$th+1] -= $value;
-                                $this->unitProfit[$tr][$th] += $value;
-                            } else if ($th-1 >= 0) {
-                                $value = $this->unitProfit[$tr-1][$th];
-                                $this->unitProfit[$tr-1][$th] -= $value;
-                                $this->unitProfit[$tr-1][$th-1] += $value;
-                                $this->unitProfit[$tr][$th-1] -= $value;
-                                $this->unitProfit[$tr][$th] += $value;
+                        $coordinates = [];
+
+                        $tempTr = $tr;
+                        $tempTh = $th;
+                        // prawo, dół, lewo ,góra
+                        if (!$path) {
+                            while($tempTh < 3) {
+                                if ($this->delta[$tempTr][$tempTh] === null) {
+                                    $coordinates[0] = [$tempTr, $tempTh];
+
+                                    $tempTr++;
+                                    while($tempTr < 5) {
+                                        $tempTempTh = $tempTh;
+                                        if ($this->delta[$tempTr][$tempTh] === null) {
+                                            $coordinates[1] = [$tempTr, $tempTh];
+
+                                            $tempTh--;
+                                            while($tempTh >= 0) {
+                                                $tempTempTr = $tempTr;
+                                                if ($this->delta[$tempTr][$tempTh] === null) {
+                                                    $coordinates[2] = [$tempTr, $tempTh];
+
+                                                    $tempTr--;
+                                                    while($tempTr >= 0) {
+                                                        if ($tempTr === $tr && $tempTh === $th) {
+                                                            $coordinates[3] = [$tempTr, $tempTh];
+                                                            $path = true;
+                                                        }
+
+                                                        if ($path) {
+                                                            break;
+                                                        }
+                                                        $tempTr--;
+                                                    }
+                                                }
+
+                                                if ($path) {
+                                                    break;
+                                                }
+                                                $tempTh--;
+                                                $tempTr = $tempTempTr;
+                                            }
+                                        }
+
+                                        if ($path) {
+                                            break;
+                                        }
+                                        $tempTr++;
+                                        $tempTh = $tempTempTh;
+                                    }
+                                }
+
+                                if ($path) {
+                                    break;
+                                }
+                                $tempTh++;
                             }
-                        } else if ($tr+1 < 5) {
-                            if ($th+1 < 3) {
-                                $value = $this->unitProfit[$tr+1][$th];
-                                $this->unitProfit[$tr+1][$th] -= $value;
-                                $this->unitProfit[$tr+1][$th+1] += $value;
-                                $this->unitProfit[$tr][$th+1] -= $value;
-                                $this->unitProfit[$tr][$th] += $value;
-                            } else if ($th-1 >= 0) {
-                                $value = $this->unitProfit[$tr+1][$th];
-                                $this->unitProfit[$tr+1][$th] -= $value;
-                                $this->unitProfit[$tr+1][$th-1] += $value;
-                                $this->unitProfit[$tr][$th-1] -= $value;
-                                $this->unitProfit[$tr][$th] += $value;
+                        }
+
+
+                        $tempTr = $tr;
+                        $tempTh = $th;
+                        // dół, lewo ,góra, prawo
+                        if (!$path) {
+                            while($tempTr < 5) {
+                                if ($this->delta[$tempTr][$tempTh] === null) {
+                                    $coordinates[0] = [$tempTr, $tempTh];
+
+                                    $tempTh--;
+                                    while($tempTh >= 0) {
+                                        $tempTempTr = $tempTr;
+                                        if ($this->delta[$tempTr][$tempTh] === null) {
+                                            $coordinates[1] = [$tempTr, $tempTh];
+
+                                            $tempTr--;
+                                            while($tempTr >= 0) {
+                                                $tempTempTh = $tempTh;
+                                                if ($this->delta[$tempTr][$tempTh] === null) {
+                                                    $coordinates[2] = [$tempTr, $tempTh];
+
+                                                    $tempTh++;
+                                                    while($tempTh < 3) {
+                                                        if ($tempTr === $tr && $tempTh === $th) {
+                                                            $coordinates[3] = [$tempTr, $tempTh];
+                                                            $path = true;
+                                                        }
+
+                                                        if ($path) {
+                                                            break;
+                                                        }
+                                                        $tempTh++;
+                                                    }
+                                                }
+
+                                                if ($path) {
+                                                    break;
+                                                }
+                                                $tempTr--;
+                                                $tempTh = $tempTempTh;
+                                            }
+                                        }
+
+                                        if ($path) {
+                                            break;
+                                        }
+                                        $tempTh--;
+                                        $tempTr = $tempTempTr;
+                                    }
+                                }
+
+                                if ($path) {
+                                    break;
+                                }
+                                $tempTr++;
+                            }
+                        }
+
+
+                        $tempTr = $tr;
+                        $tempTh = $th;
+                        // lewo ,góra, prawo, dół
+                        if (!$path) {
+                            while($tempTh >= 0) {
+                                if ($this->delta[$tempTr][$tempTh] === null) {
+                                    $coordinates[0] = [$tempTr, $tempTh];
+
+                                    $tempTr--;
+                                    while($tempTr >= 0) {
+                                        $tempTempTh = $tempTh;
+                                        if ($this->delta[$tempTr][$tempTh] === null) {
+                                            $coordinates[1] = [$tempTr, $tempTh];
+
+                                            $tempTh++;
+                                            while($tempTh < 3) {
+                                                $tempTempTr = $tempTr;
+                                                if ($this->delta[$tempTr][$tempTh] === null) {
+                                                    $coordinates[2] = [$tempTr, $tempTh];
+
+                                                    $tempTr++;
+                                                    while($tempTr < 5) {
+                                                        if ($tempTr === $tr && $tempTh === $th) {
+                                                            $coordinates[3] = [$tempTr, $tempTh];
+                                                            $path = true;
+                                                        }
+
+                                                        if ($path) {
+                                                            break;
+                                                        }
+                                                        $tempTr++;
+                                                    }
+                                                }
+
+                                                if ($path) {
+                                                    break;
+                                                }
+                                                $tempTh++;
+                                                $tempTr = $tempTempTr;
+                                            }
+                                        }
+
+                                        if ($path) {
+                                            break;
+                                        }
+                                        $tempTr--;
+                                        $tempTh = $tempTempTh;
+                                    }
+                                }
+
+                                if ($path) {
+                                    break;
+                                }
+                                $tempTh--;
+                            }
+                        }
+
+
+
+                        $tempTr = $tr;
+                        $tempTh = $th;
+                        // góra, prawo, dół, lewo
+                        if (!$path) {
+                            while($tempTr >= 0) {
+                                if ($this->delta[$tempTr][$tempTh] === null) {
+                                    $coordinates[0] = [$tempTr, $tempTh];
+
+                                    $tempTh++;
+                                    while($tempTh < 3) {
+                                        $tempTempTr = $tempTr;
+                                        if ($this->delta[$tempTr][$tempTh] === null) {
+                                            $coordinates[1] = [$tempTr, $tempTh];
+
+                                            $tempTr++;
+                                            while($tempTr < 5) {
+                                                $tempTempTh = $tempTh;
+                                                if ($this->delta[$tempTr][$tempTh] === null) {
+                                                    $coordinates[2] = [$tempTr, $tempTh];
+
+                                                    $tempTh--;
+                                                    while($tempTh >= 0) {
+                                                        if ($tempTr === $tr && $tempTh === $th) {
+                                                            $coordinates[3] = [$tempTr, $tempTh];
+                                                            $path = true;
+                                                        }
+
+                                                        if ($path) {
+                                                            break;
+                                                        }
+                                                        $tempTh--;
+                                                    }
+                                                }
+
+                                                if ($path) {
+                                                    break;
+                                                }
+                                                $tempTr++;
+                                                $tempTh = $tempTempTh;
+                                            }
+                                        }
+
+                                        if ($path) {
+                                            break;
+                                        }
+                                        $tempTh++;
+                                        $tempTr = $tempTempTr;
+                                    }
+                                }
+
+                                if ($path) {
+                                    break;
+                                }
+                                $tempTr--;
+                                $tempTh = $th;
+                            }
+                        }
+
+
+                        if ($path) {
+                            if ((int) $this->unitProfit[$coordinates[0][0]][$coordinates[0][1]] !== 0) {
+                                $value = $this->unitProfit[$coordinates[0][0]][$coordinates[0][1]];
+                                $this->unitProfit[$coordinates[0][0]][$coordinates[0][1]] -= $value;
+                                $this->unitProfit[$coordinates[1][0]][$coordinates[1][1]] += $value;
+                                $this->unitProfit[$coordinates[2][0]][$coordinates[2][1]] -= $value;
+                                $this->unitProfit[$coordinates[3][0]][$coordinates[3][1]] += $value;
+                            } else if ((int) $this->unitProfit[$coordinates[2][0]][$coordinates[2][1]] !== 0) {
+                                $value = $this->unitProfit[$coordinates[2][0]][$coordinates[2][1]];
+                                $this->unitProfit[$coordinates[0][0]][$coordinates[0][1]] -= $value;
+                                $this->unitProfit[$coordinates[1][0]][$coordinates[1][1]] += $value;
+                                $this->unitProfit[$coordinates[2][0]][$coordinates[2][1]] -= $value;
+                                $this->unitProfit[$coordinates[3][0]][$coordinates[3][1]] += $value;
                             }
                         }
                     }
+                    if ($path) {
+                        break;
+                    }
                     $th++;
+                }
+                if ($path) {
+                    break;
                 }
                 $th = 0;
                 $tr++;
@@ -146,8 +375,9 @@ class BrokerArray
             $this->count();
             if ($tempIncome > $this->income) {
                 $this->income = $tempIncome;
-                echo "Optymalizacja okazała się gorszym rozwiązaniem";
-            } else if ($tempIncome < $this->income) {
+
+                echo '<div class="process-message-div"><h2 class="title error-small">Optymalizacja okazała się gorszym rozwiązaniem</h2></div>';
+            } else if ($tempIncome <= $this->income) {
                 echo $this->generateTable("Tabela zoptymalizowana");
             }
         }
