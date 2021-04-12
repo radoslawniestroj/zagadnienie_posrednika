@@ -14,6 +14,8 @@ class BrokerArray
 
     private $transportCost;
 
+    private $blockedTruck;
+
     private $unitProfit;
 
     private $alpha;
@@ -31,7 +33,8 @@ class BrokerArray
         $purchaseCost,
         $demand,
         $sellingCost,
-        $transportCost
+        $transportCost,
+        $blockedTruck = null
     ) {
         $supply[4] = $demand[0] + $demand[1];
         $this->supply = $supply;
@@ -45,6 +48,8 @@ class BrokerArray
         $this->sellingCost = $sellingCost;
 
         $this->transportCost = $transportCost;
+
+        $this->blockedTruck = $blockedTruck;
 
         $this->optimizeCounter = 0;
 
@@ -72,6 +77,10 @@ class BrokerArray
 
         $this->profit[3][0] = $this->sellingCost[0] - $this->transportCost[3][0] - $this->purchaseCost[3];
         $this->profit[3][1] = $this->sellingCost[1] - $this->transportCost[3][1] - $this->purchaseCost[3];
+
+        if ($this->blockedTruck) {
+            $this->profit[$this->blockedTruck[0]][$this->blockedTruck[1]] = -999999;
+        }
     }
 
     public function countSolution()

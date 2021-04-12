@@ -18,12 +18,13 @@
 
 <body>
     <?php
-    // [podaż], [koszty zakupu], [popyt], [ceny sprzedaży], [koszty transportu]
+    // [podaż], [koszty zakupu], [popyt], [ceny sprzedaży], [koszty transportu], [id trasy blokowanej]
         $brokerArray1 = new BrokerArray([7, 14, 15 ,25],
                                         [10, 12, 20, 24],
                                         [10, 35],
                                         [30, 25],
-                                        [[8, 20], [12, 10], [15, 5], [16, 2]]
+                                        [[8, 20], [12, 10], [15, 5], [16, 2]],
+                                        [1, 2]
         );
 
         $brokerArray2 = new BrokerArray([7, 14, 15 ,22],
